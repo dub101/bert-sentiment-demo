@@ -1,0 +1,8 @@
+{"id":"doc-001","text":"Transformers use self-attention to model relationships between tokens."}
+{"id":"doc-002","text":"DistilBERT is a smaller, faster model distilled from BERT."}
+{"id":"doc-003","text":"Semantic search uses embeddings to retrieve meaningfully similar documents."}
+{"id":"doc-004","text":"Kubernetes deployments manage replicas, rollouts, and health probes."}
+{"id":"doc-005","text":"FastAPI builds APIs in Python using type hints and automatic validation."}
+{"id":"doc-006","text":"Minikube runs a local Kubernetes cluster for development."}
+{"id":"doc-007","text":"Cosine similarity measures the angle between two vectors."}
+{"id":"doc-008","text":"A reverse proxy sits in front of application servers to route and secure traffic."}

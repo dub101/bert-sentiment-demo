@@ -7,3 +7,13 @@ datasets/
 models/
 *.log
 .DS_Store
+
+# local/real data (keep sample files)
+data/*
+!data/corpus.jsonl
+!data/README.md
+
+# future vector indexes / artifacts
+data/index/
+data/*.npy
+data/*.faiss

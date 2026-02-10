@@ -31,10 +31,35 @@ def predict_one(tokenizer, model, text: str):
     pred_prob = float(probs[pred_id].item())
     return pred_label, pred_prob, probs.tolist(), logits.tolist()
 
+def interactive_loop(tokenizer, model) -> None:
+    print("Interactive mode. Type text and press Enter.")
+    print("Type 'exit' or 'quit' to stop. Ctrl-D also exits.\n")
+
+    while True:
+        try:
+            text = input("> ").strip()
+        except EOFError:
+            print("\nbye")
+            break
+        
+        if not text:
+            continue
+        if text.lower() in {"exit", "quit"}:
+            print("bye")
+            break
+
+        label, prob, probs, _logits = predict_one(tokenizer, model, text)
+        print(f"{label} (prob={prob:.4f}) probs={probs}")
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Sentiment prediction using a fine-tuned DistilBERT model.")
-    parser.add_argument("text", type=str, help="Input text to classify (wrap in quotes).")
+    parser.add_argument("text", nargs="?", type=str, help="Input text to classify (wrap in quotes).")
+    parser.add_argument(
+        "--interactive",
+        action="store_true",
+        help="Run an interactive session (loads model once).",
+    )
     parser.add_argument(
         "--model-dir",
         type=str,
@@ -44,6 +69,11 @@ def main() -> None:
     args = parser.parse_args()
 
     tokenizer, model = load_model(args.model_dir)
+    if args.interactive:
+        interactive_loop(tokenizer, model)
+        return
+    if args.text is None:
+        raise SystemExit("Provide TEXT or use --interactive")
     label, prob, probs, logits = predict_one(tokenizer, model, args.text)
 
     print(f"text: {args.text}")

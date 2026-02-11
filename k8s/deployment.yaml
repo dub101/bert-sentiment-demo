@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bert-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bert-demo
+  template:
+    metadata:
+      labels:
+        app: bert-demo
+    spec:
+      containers:
+        - name: api
+          image: bert-demo:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            # Keep CI/K8s deterministic: load classifier from HF Hub unless you mount a model dir.
+            - name: CLASSIFIER_CKPT
+              value: "distilbert/distilbert-base-uncased-finetuned-sst-2-english"
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 5
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"

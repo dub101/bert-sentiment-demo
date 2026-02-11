@@ -37,3 +37,13 @@ jobs:
         env:
           RUN_MODEL_TESTS: "0"
         run: pytest
+
+      - name: Docker build (api)
+        run: docker build -t bert-demo:ci -f Dockerfile.api .
+
+      - name: Validate Kubernetes manifests
+        run: |
+          curl -sSL -o kubectl "https://dl.k8s.io/release/v1.35.0/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          ./kubectl apply --dry-run=client -f k8s/
+

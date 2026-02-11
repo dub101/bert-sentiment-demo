@@ -41,10 +41,9 @@ jobs:
       - name: Docker build (api)
         run: docker build -t bert-demo:ci -f Dockerfile.api .
 
-      - name: Validate Kubernetes manifests
+      - name: Validate Kubernetes manifests (kubeconform)
         run: |
-          curl -sSL -o kubectl "https://dl.k8s.io/release/v1.35.0/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          ./kubectl apply --dry-run=client --validate=false -f k8s/
-
+          curl -sSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar xz
+          chmod +x kubeconform
+          ./kubeconform -strict -summary -kubernetes-version 1.35.0 k8s/*.yaml
 

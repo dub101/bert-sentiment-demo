@@ -1,0 +1,16 @@
+# Runtime deps (top-level). Lockfile is generated from this.
+
+# CPU torch wheels live on the PyTorch index:
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch==2.10.0+cpu
+transformers==5.1.0
+sentence-transformers==5.2.2
+
+datasets
+evaluate
+
+fastapi
+uvicorn
+
+numpy

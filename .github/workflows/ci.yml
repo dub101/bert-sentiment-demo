@@ -16,13 +16,17 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Check requirements.lock is up to date
+        run: |
+          python -m pip install -U pip pip-tools
+          pip-compile --strip-extras --output-file requirements.lock requirements.in
+          git diff --exit-code requirements.lock
+
       - name: Install dependencies
         run: |
           python -m pip install -U pip
-          pip install -U ruff pylint mypy pytest httpx fastapi uvicorn
-          pip install -U --index-url https://download.pytorch.org/whl/cpu torch==2.10.0+cpu
-          pip install -U transformers==5.1.0 sentence-transformers==5.2.2
-          pip install -U datasets evaluate
+          pip install -U ruff pylint mypy pytest httpx
+          pip install -r requirements.lock
 
       - name: Ruff
         run: ruff check .

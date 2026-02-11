@@ -31,16 +31,16 @@ class SearchRequest(BaseModel):
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    init_classifier(app)
-    init_search(app)
+async def lifespan(fastapi_app: FastAPI):
+    init_classifier(fastapi_app)
+    init_search(fastapi_app)
     yield
 
 
 app = FastAPI(title="BERT Demo Service", version="0.1.0", lifespan=lifespan)
 
 
-def init_classifier(app: FastAPI) -> None:
+def init_classifier(fastapi_app: FastAPI) -> None:
     if CLASSIFIER_MODEL_DIR:
         src = Path(CLASSIFIER_MODEL_DIR)
         tokenizer_src = src
@@ -52,22 +52,22 @@ def init_classifier(app: FastAPI) -> None:
         tokenizer_src = CLASSIFIER_CKPT
         model_src = CLASSIFIER_CKPT
 
-    app.state.tokenizer = AutoTokenizer.from_pretrained(tokenizer_src)
-    app.state.model = AutoModelForSequenceClassification.from_pretrained(model_src)
-    app.state.model.eval()
+    fastapi_app.state.tokenizer = AutoTokenizer.from_pretrained(tokenizer_src)
+    fastapi_app.state.model = AutoModelForSequenceClassification.from_pretrained(model_src)
+    fastapi_app.state.model.eval()
 
 
-def init_search(app: FastAPI) -> None:
+def init_search(fastapi_app: FastAPI) -> None:
     if not CORPUS_PATH.exists():
         raise RuntimeError(f"Corpus file not found: {CORPUS_PATH}")
     corpus = []
     with CORPUS_PATH.open("r", encoding="utf-8") as f:
         for line in f:
             corpus.append(json.loads(line))
-    app.state.corpus = corpus
-    app.state.embedder = SentenceTransformer(EMBED_MODEL_NAME)
+    fastapi_app.state.corpus = corpus
+    fastapi_app.state.embedder = SentenceTransformer(EMBED_MODEL_NAME)
     texts = [d["text"] for d in corpus]
-    app.state.corpus_emb = app.state.embedder.encode(texts, normalize_embeddings=True)
+    fastapi_app.state.corpus_emb = app.state.embedder.encode(texts, normalize_embeddings=True)
 
 
 @app.get("/healthz")

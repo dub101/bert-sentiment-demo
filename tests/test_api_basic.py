@@ -1,4 +1,5 @@
 import os
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -35,6 +36,7 @@ def test_search_returns_results(client):
     assert "text" in data["results"][0]
     assert "score" in data["results"][0]
 
+
 def test_classify_smoke(client):
     if os.getenv("RUN_MODEL_TESTS", "0") != "1":
         pytest.skip("Set RUN_MODEL_TESTS=1 to run model-loading tests")
@@ -45,4 +47,3 @@ def test_classify_smoke(client):
     assert data["label"] in ("positive", "negative")
     assert 0.0 <= data["prob"] <= 1.0
     assert len(data["probs"]) == 2
-

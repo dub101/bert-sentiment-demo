@@ -1,7 +1,7 @@
 import json
 import os
-from pathlib import Path
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -29,13 +29,16 @@ class SearchRequest(BaseModel):
     query: str
     top_k: int = 3
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_classifier(app)
     init_search(app)
     yield
 
+
 app = FastAPI(title="BERT Demo Service", version="0.1.0", lifespan=lifespan)
+
 
 def init_classifier(app: FastAPI) -> None:
     if CLASSIFIER_MODEL_DIR:

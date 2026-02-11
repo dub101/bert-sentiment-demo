@@ -41,6 +41,9 @@ app = FastAPI(title="BERT Demo Service", version="0.1.0", lifespan=lifespan)
 
 
 def init_classifier(fastapi_app: FastAPI) -> None:
+    tokenizer_src: Path | str
+    model_src: Path | str
+
     if CLASSIFIER_MODEL_DIR:
         src = Path(CLASSIFIER_MODEL_DIR)
         tokenizer_src = src
